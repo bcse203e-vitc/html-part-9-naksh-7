@@ -1,1 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Appointment Booking System</title>
+    <link rel="stylesheet" href="style1.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        h2{
+            margin-top: 12px;
+            margin-bottom: 12px;
+        }
+        .table{
+            margin-top: 40px;
+        }
+        .services {
+            width: 40vw;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .button-container {
+            display: flex;
+        }
+        .services p {
+            margin: 0;
+        }
+        .services button {
+            margin-left: 20px;
+        }
+        #popup{
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            top: 0;
+            overflow: auto;
+            background-color: rgba(36, 35, 35, 0.904);
+        }
+        .content {
+            position: relative;
+            top: 20px;
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+        }
+        #close {
+            color: #585858;
+            position: absolute;
+            left: 750px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .error{
+            color: red;
+            font-size: 0.9em;
+            display: none;
+        }
+        #approve{
+            color: green;
+            align-self: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome</h1>
+    <h2>Available Services</h2>
+    <div class="table">
+        <div class="services" id="f1">
+            <p>Doctor Consultation</p>
+            <div class="button-container">
+                <button id="doc" onclick="popup()">Book Appointment</button>
+            </div>
+        </div>
+        <div class="services" id="f2">
+            <p>Salon Booking</p>
+            <div class="button-container">
+                <button id="sal" onclick="popup()">Book Appointment</button>
+            </div>
+        </div>
+        <div class="services" id="f3">
+            <p>Car Parking</p>
+            <div class="button-container">
+                <button id="car" onclick="popup()">Book Appointment</button>
+            </div>
+        </div>
+    </div>
+    <div id="popup">
+        <div class="content">
+            <span id="close" onclick="closepopup()">&times;</span>
+            <form id="pform">
+                <label for="fullName">Full Name (Required):</label><br>
+                <input type="text" id="fullName" name="fullName" required>
+                <div class="error" id="nerror">Name is not valid</div><br><br>
+                <label for="email">Email Address (Required):</label><br>
+                <input type="email" id="email" name="email" required>
+                <div class="error" id="eerror">Email is not valid</div><br><br>
+                <label for="phone">Phone Number (Required):</label><br>
+                <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required>
+                <div class="error" id="perror">Phone number is not valid</div><br><br>
+                <label for="service">Select Service (Required):</label><br>
+                <select id="service" name="service" required>
+                    <option value="doctor">Doctor Consultation</option>
+                    <option value="salon">Salon Booking</option>
+                    <option value="car">Car Parking</option>
+                </select><br><br>
+                <label for="dateTime">Date & Time (Required):</label><br>
+                <input type="datetime-local" id="dateTime" name="dateTime" required>
+                <div class="error" id="derror">Date is not valid</div><br><br>
+                <label for="requests">Special Requests (Optional):</label><br>
+                <textarea id="requests" name="requests"></textarea><br><br>
+                <label><input type="checkbox" id="terms" name="terms" required> I agree to the terms and conditions</label>
+                <div class="error" id="terrors">You must agree to the terms</div><br><br>
+                <button type="submit" onclick="validate(event)">Submit</button><br><br>
+                <span id="approve">Your data has been recorded</span>
+            </form>
+        </div>
+    </div>
+    <script>
+        let form = document.getElementById('pform');
+        let a = document.getElementById('popup');
+        function closepopup(){
+            a.style.display = "none";
+        }
+        function popup(){
+            a.style.display = "block";    
+        }
+        function validate(event){
+            event.preventDefault();
+            let check = true;
+            let name = document.getElementById('fullName').value.trim();
+            let email = document.getElementById('email').value.trim();
+            let phone = document.getElementById('phone').value.trim();
+            let dateTime = new Date(document.getElementById('dateTime').value);
+            let terms = document.getElementById('terms').checked;
 
+            if(name === ""){
+                document.getElementById('nerror').style.display = "block";
+                check = false;
+            } else {
+                document.getElementById('nerror').style.display = "none";
+            }
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if(!emailPattern.test(email)){
+                document.getElementById('eerror').style.display = "block";
+                check = false;
+            } else {
+                document.getElementById('eerror').style.display = "none";
+            }
+
+            if(phone.length !== 10 || !/^\d{10}$/.test(phone)){
+                document.getElementById('perror').style.display = "block";
+                check = false;
+            } else {
+                document.getElementById('perror').style.display = "none";
+            }
+
+            const now = new Date();
+            if(dateTime <= now){
+                document.getElementById('derror').style.display = "block";
+                check = false;
+            } else {
+                document.getElementById('derror').style.display = "none";
+            }
+
+            if(!terms){
+                document.getElementById('terrors').style.display = "block";
+                check = false;
+            } else {
+                document.getElementById('terrors').style.display = "none";
+            }
+
+            if(check){
+                document.getElementById('approve').style.display = "block";
+                closepopup();
+            }
+            return check;
+        }
+    </script>
+</body>
+</html>
